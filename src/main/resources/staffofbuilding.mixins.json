@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "draylar.staffofbuilding.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+
+  ],
+  "client": [
+    "WorldRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

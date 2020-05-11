@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "staffofbuilding:item/infinite_builder_staff"
+  }
+}

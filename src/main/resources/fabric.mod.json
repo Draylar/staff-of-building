@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "staffofbuilding",
+  "version": "${version}",
+  "name": "Staff of Building",
+  "description": "Builder wands, but they're actually staffs!",
+  "authors": [
+    "Draylar"
+  ],
+  "license": "MIT",
+  "icon": "assets/staffofbuilding/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "draylar.staffofbuilding.StaffOfBuilding"
+    ]
+  },
+  "mixins": [
+    "staffofbuilding.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.8.2+build.194",
+    "fabric": "*"
+  }
+}
