@@ -6,20 +6,20 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShapeContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.shape.VoxelShape;
@@ -92,7 +92,7 @@ public abstract class WorldRendererMixin {
                     // check to make sure the block we're placing off has an item
                     if (item != Items.AIR) {
                         // get amount of required item in player inventory
-                        int count = player.inventory.count(item);
+                        int count = player.inventory.countInInv(item);
 
                         // run placement logic if they have at least 1 of the item (or if they are in creative)
                         if (count > 0 || player.isCreative()) {
@@ -106,7 +106,7 @@ public abstract class WorldRendererMixin {
                             for (BlockPos newPosition : validPositions) {
                                 if (this.world.getWorldBorder().contains(newPosition)) {
                                     BlockPos testPos = lookingAtPos.subtract(newPosition);
-                                    shape = VoxelShapes.union(shape, lookingAtState.getOutlineShape(this.world, lookingAtPos, ShapeContext.of(camera.getFocusedEntity())).offset(-testPos.getX(), -testPos.getY(), -testPos.getZ()));
+                                    shape = VoxelShapes.union(shape, lookingAtState.getOutlineShape(this.world, lookingAtPos, EntityContext.of(camera.getFocusedEntity())).offset(-testPos.getX(), -testPos.getY(), -testPos.getZ()));
                                 }
                             }
 

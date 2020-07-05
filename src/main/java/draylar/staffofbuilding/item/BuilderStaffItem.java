@@ -46,7 +46,7 @@ public class BuilderStaffItem extends Item {
         // check to make sure the block we're placing off has an item
         if(player != null && item != Items.AIR && context.getHand() == Hand.MAIN_HAND) {
             // get amount of required item in player inventory
-            int count = player.inventory.count(item);
+            int count = player.inventory.countInInv(item);
 
             // run placement logic if they have at least 1 of the item (or if they are a creative user)
             if(count > 0 || player.isCreative()) {
@@ -62,7 +62,7 @@ public class BuilderStaffItem extends Item {
 
                     // take items from survival inventory
                     if(!player.isCreative()) {
-                        player.inventory.method_29280(stack -> stack.getItem().equals(item), positions.size(), player.inventory);
+                        player.inventory.method_7369(stack -> stack.getItem().equals(item), positions.size());
                     }
 
                     // damage item
