@@ -3,6 +3,8 @@ package draylar.staffofbuilding.api;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class SelectionCalculator {
 
             // get new set of new neighbors from the current new neighbors
             for (BlockPos neighbor : storedNeighbors) {
-                List<BlockPos> facingNeighbors = getFacingNeighbors(world, neighbor, direction, originState);
+                List<BlockPos> facingNeighbors = getValidNeighbors(world, neighbor, direction, originState);
 
                 // add all facing neighbors that aren't already in the pool
                 for (BlockPos facingNeighbor : facingNeighbors) {
@@ -53,32 +55,12 @@ public class SelectionCalculator {
         return selectedPositions;
     }
 
-    // todo: cache these?
-    // grabs a list of facing neighbors
-    private static List<Direction> getDirectionalNeighbors(Direction direction) {
-        ArrayList<Direction> directions = new ArrayList<>();
-
-        if(direction.getAxis() == Direction.Axis.Y) {
-            directions.add(Direction.NORTH);
-            directions.add(Direction.EAST);
-            directions.add(Direction.SOUTH);
-            directions.add(Direction.WEST);
-        } else {
-            directions.add(direction.rotateYClockwise());
-            directions.add(direction.rotateYCounterclockwise());
-            directions.add(Direction.UP);
-            directions.add(Direction.DOWN);
-        }
-
-        return directions;
-    }
-
-    private static List<BlockPos> getFacingNeighbors(World world, BlockPos startPos, Direction facingDirection, BlockState originState) {
+    private static List<BlockPos> getValidNeighbors(World world, BlockPos startPos, Direction facingDirection, BlockState originState) {
         List<BlockPos> foundNeighbors = new ArrayList<>();
 
         // check all side direction positions for the current facing direction to get neighbors
-        for(Direction checkDirection : getDirectionalNeighbors(facingDirection)) {
-            BlockPos offsetPos = startPos.offset(checkDirection);
+        for(Vec3i checkDirection : getPotentialNeighbors(facingDirection)) {
+            BlockPos offsetPos = startPos.add(checkDirection);
             BlockState innerState = world.getBlockState(offsetPos.offset(facingDirection.getOpposite()));
             BlockState newState = world.getBlockState(offsetPos);
 
@@ -89,5 +71,29 @@ public class SelectionCalculator {
         }
 
         return foundNeighbors;
+    }
+
+    // todo: cache these?
+    // grabs a list of facing neighbors
+    private static List<Vec3i> getPotentialNeighbors(Direction direction) {
+        ArrayList<Vec3i> directions = new ArrayList<>();
+
+        if(direction.getAxis() == Direction.Axis.Y) {
+            directions.add(Direction.NORTH.getVector());
+            directions.add(Direction.EAST.getVector());
+            directions.add(Direction.SOUTH.getVector());
+            directions.add(Direction.WEST.getVector());
+            directions.add(Direction.WEST.getVector().offset(Direction.NORTH, 1));
+            directions.add(Direction.NORTH.getVector().offset(Direction.EAST, 1));
+            directions.add(Direction.EAST.getVector().offset(Direction.SOUTH, 1));
+            directions.add(Direction.SOUTH.getVector().offset(Direction.WEST, 1));
+        } else {
+            directions.add(direction.rotateYClockwise().getVector());
+            directions.add(direction.rotateYCounterclockwise().getVector());
+            directions.add(Direction.UP.getVector());
+            directions.add(Direction.DOWN.getVector());
+        }
+
+        return directions;
     }
 }
