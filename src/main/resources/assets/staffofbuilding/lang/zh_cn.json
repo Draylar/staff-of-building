@@ -1,0 +1,13 @@
+{
+  "itemGroup.staffofbuilding.group": "建筑之杖",
+
+  "item.staffofbuilding.wooden_builder_staff": "木制建筑之杖",
+  "item.staffofbuilding.stone_builder_staff": "石制建筑之杖",
+  "item.staffofbuilding.iron_builder_staff": "铁制建筑之杖",
+  "item.staffofbuilding.golden_builder_staff": "黄金建筑之杖",
+  "item.staffofbuilding.diamond_builder_staff": "钻石建筑之杖",
+  "item.staffofbuilding.netherite_builder_staff": "下界合金建筑之杖",
+  "item.staffofbuilding.infinite_builder_staff": "无限建筑之杖",
+
+  "staffofbuilding.placement_range": "放置范围：%d格方块"
+}
