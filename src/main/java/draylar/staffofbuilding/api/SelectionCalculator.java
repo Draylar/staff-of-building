@@ -65,7 +65,7 @@ public class SelectionCalculator {
             BlockState newState = world.getBlockState(offsetPos);
 
             // ensure inner state of neighbor position is the same as the original state the player is looking at
-            if(innerState.equals(originState) && newState.isAir()) {
+            if(innerState.equals(originState) && (newState.isAir() || !newState.getFluidState().isEmpty())) {
                 foundNeighbors.add(offsetPos);
             }
         }

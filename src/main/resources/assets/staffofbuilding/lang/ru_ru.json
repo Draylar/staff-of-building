@@ -1,0 +1,13 @@
+{
+  "itemGroup.staffofbuilding.group": "Staff of Building",
+
+  "item.staffofbuilding.wooden_builder_staff": "Деревяная Строительная Палочка",
+  "item.staffofbuilding.stone_builder_staff": "Каменая Строительная Палочка",
+  "item.staffofbuilding.iron_builder_staff": "Железная Строительная Палочка",
+  "item.staffofbuilding.golden_builder_staff": "Золотая Строительная Палочка",
+  "item.staffofbuilding.diamond_builder_staff": "Алмазная Строительная Палочка",
+  "item.staffofbuilding.netherite_builder_staff": "Незеритовая Строительная Палочка",
+  "item.staffofbuilding.infinite_builder_staff": "Бесконечная Строительная Палочка",
+
+  "staffofbuilding.placement_range": "Диапазон размещения: %d blocks"
+}
