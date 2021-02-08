@@ -75,7 +75,7 @@ public class BuilderStaffItem extends Item {
 
                     // take items from survival inventory
                     if(!player.isCreative()) {
-                        player.inventory.method_29280(stack -> stack.getItem().equals(item), positions.size(), player.inventory);
+                        player.inventory.remove(stack -> stack.getItem().equals(item), positions.size(), player.inventory);
                     }
 
                     // damage item
