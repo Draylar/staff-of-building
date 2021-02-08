@@ -1,5 +1,6 @@
 package draylar.staffofbuilding.item;
 
+import draylar.staffofbuilding.StaffOfBuilding;
 import draylar.staffofbuilding.api.SelectionCalculator;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -12,6 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
@@ -64,29 +66,41 @@ public class BuilderStaffItem extends Item {
             // run placement logic if they have at least 1 of the item (or if they are a creative user)
             if(count > 0 || player.isCreative()) {
                 if(!world.isClient) {
+                    // potentially reset state to prevent dupe or similar  mechanics
+                    if(StaffOfBuilding.RESET_LIST.contains(state.getBlock())) {
+                        state = state.getBlock().getDefaultState();
+                    }
+
                     // get number of blocks to place (min between max size and the count of items in inventory)
                     int maxChecks = Math.min(size, player.isCreative() ? size : count);
                     List<BlockPos> positions = SelectionCalculator.calculateSelection(world, pos, side, maxChecks);
+                    int taken = 0;
 
                     // place blocks
-                    positions.forEach(position -> {
-                        world.setBlockState(position, state);
-                    });
+                    for (BlockPos position : positions) {
+                        if(world.getBlockState(position).isAir()) {
+                            world.setBlockState(position, state);
+                            taken++;
+                        }
+                    }
 
                     // take items from survival inventory
                     if(!player.isCreative()) {
-                        player.inventory.remove(stack -> stack.getItem().equals(item), positions.size(), player.inventory);
+                        player.inventory.remove(stack -> stack.getItem().equals(item), taken, player.inventory);
                     }
 
                     // damage item
                     if(context.getStack().isDamageable()) {
-                        context.getStack().damage(positions.size(), player, (livingEntity) -> {
+                        context.getStack().damage(taken, player, (livingEntity) -> {
                             livingEntity.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
                         });
                     }
+
+                    if(taken > 0) {
+                        world.playSound(null, player.getBlockPos(), state.getSoundGroup().getPlaceSound(), SoundCategory.PLAYERS, state.getSoundGroup().getVolume(), state.getSoundGroup().getPitch());
+                    }
                 }
 
-                player.playSound(state.getSoundGroup().getPlaceSound(), state.getSoundGroup().getVolume(), state.getSoundGroup().getPitch());
                 return ActionResult.SUCCESS;
             }
         }
