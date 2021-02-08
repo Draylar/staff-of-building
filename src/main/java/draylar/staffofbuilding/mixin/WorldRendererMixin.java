@@ -27,6 +27,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -39,42 +40,17 @@ import java.util.List;
 public abstract class WorldRendererMixin {
 
     @Shadow @Final private MinecraftClient client;
-
     @Shadow private ClientWorld world;
-
-    @Shadow protected abstract void drawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState);
-
-    @Shadow
-    protected static void drawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) {
-    }
+    @Shadow private static void drawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) { }
+    @Unique private boolean sob_renderedHighlight = false;
 
     @Inject(
             method = "render",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;pushMatrix()V", ordinal = 0),
-            locals = LocalCapture.CAPTURE_FAILHARD
-    )
-    private void renderWandHighlight(
-            MatrixStack matrices,
-            float tickDelta,
-            long limitTime,
-            boolean renderBlockOutline,
-            Camera camera,
-            GameRenderer gameRenderer,
-            LightmapTextureManager lightmapTextureManager,
-            Matrix4f matrix4f,
-            CallbackInfo ci,
-            Profiler profiler,
-            Vec3d vec3d,
-            double d,
-            double e,
-            double f,
-            Matrix4f matrix4f2,
-            boolean bl,
-            Frustum frustum2,
-            boolean bl3,
-            VertexConsumerProvider.Immediate immediate
-    ) {
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/hit/HitResult;getType()Lnet/minecraft/util/hit/HitResult$Type;"),
+            locals = LocalCapture.CAPTURE_FAILHARD)
+    private void renderWandHighlight(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci, Profiler profiler, Vec3d vec3d, double d, double e, double f, Matrix4f matrix4f2, boolean bl, Frustum frustum2, boolean bl3, VertexConsumerProvider.Immediate immediate) {
         profiler.swap("wand_outline");
+        sob_renderedHighlight = false;
 
         if(client.player != null) {
             if(client.player.getEquippedStack(EquipmentSlot.MAINHAND).getItem() instanceof BuilderStaffItem) {
@@ -113,10 +89,21 @@ public abstract class WorldRendererMixin {
                             // render shape
                             VertexConsumer linesBuffer = immediate.getBuffer(RenderLayer.getLines());
                             drawShapeOutline(matrices, linesBuffer, shape, (double) lookingAtPos.getX() - d, (double) lookingAtPos.getY() - e, (double) lookingAtPos.getZ() - f, 0.0F, 0.0F, 0.0F, 0.4F);
+                            sob_renderedHighlight = true;
                         }
                     }
                 }
             }
+        }
+    }
+
+    @Inject(
+            method = "drawBlockOutline",
+            at = @At("HEAD"),
+            cancellable = true)
+    private void preDrawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double d, double e, double f, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
+        if(sob_renderedHighlight) {
+            ci.cancel();
         }
     }
 }
