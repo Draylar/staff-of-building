@@ -48,12 +48,12 @@ public class BuilderStaffItem extends Item {
 
     @Override
     public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-        return material.getRepairIngredient().test(ingredient);
+        return material != null && material.getRepairIngredient().test(ingredient);
     }
 
     @Override
     public int getEnchantability() {
-        return material.getEnchantability();
+        return material == null ? 100 : material.getEnchantability();
     }
 
     @Override
