@@ -1,3 +1,9 @@
 # Project exclude paths
 /.gradle/
 /build/
+.idea/
+run/
+logs/
+/staff-of-building.iml
+/staff-of-building.ipr
+/staff-of-building.iws
