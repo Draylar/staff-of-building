@@ -7,12 +7,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUsageContext;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -28,17 +27,33 @@ import java.util.List;
 public class BuilderStaffItem extends Item {
 
     private final int size;
-    private final Item repairIngredient;
+    private final ToolMaterial material;
+    private boolean invincible = false;
 
-    public BuilderStaffItem(Settings settings, int size, Item repairIngredient) {
-        super(settings);
+    public BuilderStaffItem(Settings settings, int size, ToolMaterial material) {
+        super(settings.maxDamage(material == null ? 0 : material.getDurability()));
         this.size = size;
-        this.repairIngredient = repairIngredient;
+        this.material = material;
+    }
+
+    public BuilderStaffItem invincible() {
+        this.invincible = true;
+        return this;
+    }
+
+    @Override
+    public boolean isDamageable() {
+        return !invincible && super.isDamageable();
     }
 
     @Override
     public boolean canRepair(ItemStack stack, ItemStack ingredient) {
-        return ingredient.getItem().equals(repairIngredient);
+        return material.getRepairIngredient().test(ingredient);
+    }
+
+    @Override
+    public int getEnchantability() {
+        return material.getEnchantability();
     }
 
     @Override
@@ -91,7 +106,16 @@ public class BuilderStaffItem extends Item {
 
                     // damage item
                     if(context.getStack().isDamageable()) {
-                        context.getStack().damage(taken, player, (livingEntity) -> {
+                        int damage = taken;
+
+                        // Each damage tick has a [0% / 50% / 66% / 75%] to be ignored
+                        for(int i = 0; i < damage; i++) {
+                            if(world.random.nextInt(1 + EnchantmentHelper.getLevel(Enchantments.UNBREAKING, context.getStack())) == 0) {
+                                damage--;
+                            }
+                        }
+
+                        context.getStack().damage(Math.max(0, damage), player, (livingEntity) -> {
                             livingEntity.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND);
                         });
                     }
