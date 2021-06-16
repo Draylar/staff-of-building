@@ -68,7 +68,7 @@ public abstract class WorldRendererMixin {
                     // check to make sure the block we're placing off has an item
                     if (item != Items.AIR) {
                         // get amount of required item in player inventory
-                        int count = player.inventory.count(item);
+                        int count = player.getInventory().count(item);
 
                         // run placement logic if they have at least 1 of the item (or if they are in creative)
                         if (count > 0 || player.isCreative()) {
