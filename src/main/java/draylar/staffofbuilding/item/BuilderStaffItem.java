@@ -93,7 +93,8 @@ public class BuilderStaffItem extends Item {
 
                     // place blocks
                     for (BlockPos position : positions) {
-                        if(world.getBlockState(position).isAir()) {
+                        BlockState originalState = world.getBlockState(position);
+                        if(originalState.isAir() || !originalState.getFluidState().isEmpty()) {
                             world.setBlockState(position, state);
                             taken++;
                         }
