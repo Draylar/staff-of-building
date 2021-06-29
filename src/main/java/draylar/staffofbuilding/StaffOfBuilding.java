@@ -16,7 +16,6 @@ import java.util.List;
 
 public class StaffOfBuilding implements ModInitializer {
 
-    public static final ItemGroup GROUP = FabricItemGroupBuilder.build(id("group"), () -> new ItemStack(ModItems.STONE_BUILDER_STAFF));
     public static final StaffOfBuildingConfig CONFIG = OmegaConfig.register(StaffOfBuildingConfig.class);
     public static final List<Block> RESET_LIST = Arrays.asList(Blocks.SNOW, Blocks.COMPOSTER, Blocks.CAULDRON, Blocks.CAKE, Blocks.BEEHIVE, Blocks.BREWING_STAND);
 
