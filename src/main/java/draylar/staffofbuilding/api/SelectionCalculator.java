@@ -1,9 +1,9 @@
 package draylar.staffofbuilding.api;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ShapeContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
@@ -22,7 +22,9 @@ public class SelectionCalculator {
 
         // get start neighbors
         List<BlockPos> storedNeighbors = new ArrayList<>();
-        storedNeighbors.add(offsetPos);
+        if(world.canPlace(originState, offsetPos, ShapeContext.absent())) {
+            storedNeighbors.add(offsetPos);
+        }
 
         while(checks < maxChecks && !storedNeighbors.isEmpty()) {
             // add new neighbors to stored list
@@ -65,7 +67,7 @@ public class SelectionCalculator {
             BlockState newState = world.getBlockState(offsetPos);
 
             // ensure inner state of neighbor position is the same as the original state the player is looking at
-            if(innerState.equals(originState) && (newState.isAir() || !newState.getFluidState().isEmpty())) {
+            if(innerState.equals(originState) && (newState.isAir() || !newState.getFluidState().isEmpty()) && world.canPlace(originState, offsetPos, ShapeContext.absent())) {
                 foundNeighbors.add(offsetPos);
             }
         }
