@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.4-SNAPSHOT'
+    id 'fabric-loom' version '0.7-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -14,7 +14,7 @@ minecraft {
 }
 
 repositories {
-//    maven { url 'https://jitpack.io' }
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -23,10 +23,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation "me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig_version}"
-    include "me.sargunvohra.mcmods:autoconfig1u:${project.autoconfig_version}"
-
-//    modImplementation 'com.github.shedaniel:RoughlyEnoughItems:4.x-unstable-SNAPSHOT'
+    modImplementation 'com.github.Draylar.omega-config:omega-config-base:1.0.4-beta'
+    include 'com.github.Draylar.omega-config:omega-config-base:1.0.4-beta:min'
 }
 
 processResources {
