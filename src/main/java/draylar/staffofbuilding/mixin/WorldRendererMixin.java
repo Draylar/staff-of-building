@@ -95,6 +95,8 @@ public abstract class WorldRendererMixin {
                 }
             }
         }
+
+        profiler.pop();
     }
 
     @Inject(
