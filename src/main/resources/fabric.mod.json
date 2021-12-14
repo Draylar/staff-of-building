@@ -20,6 +20,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.8.2+build.194",
-    "fabric": "*"
+    "fabric": "*",
+    "minecraft": "1.18.x"
   }
 }
