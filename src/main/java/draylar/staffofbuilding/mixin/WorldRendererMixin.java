@@ -42,14 +42,16 @@ public abstract class WorldRendererMixin {
     @Shadow @Final private MinecraftClient client;
     @Shadow private ClientWorld world;
     @Shadow private static void drawShapeOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, VoxelShape voxelShape, double d, double e, double f, float g, float h, float i, float j) { }
+
+    @Shadow @Final private BufferBuilderStorage bufferBuilders;
     @Unique private boolean sob_renderedHighlight = false;
 
     @Inject(
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/hit/HitResult;getType()Lnet/minecraft/util/hit/HitResult$Type;"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void renderWandHighlight(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci, Profiler profiler, Vec3d vec3d, double d, double e, double f, Matrix4f matrix4f2, boolean bl, Frustum frustum2, boolean bl3, VertexConsumerProvider.Immediate immediate) {
-        profiler.swap("wand_outline");
+    private void renderWandHighlight(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, CallbackInfo ci) {
+        world.getProfiler().swap("wand_outline");
         sob_renderedHighlight = false;
 
         if(client.player != null) {
@@ -87,8 +89,9 @@ public abstract class WorldRendererMixin {
                             }
 
                             // render shape
+                            VertexConsumerProvider.Immediate immediate = bufferBuilders.getEntityVertexConsumers();
                             VertexConsumer linesBuffer = immediate.getBuffer(RenderLayer.getLines());
-                            drawShapeOutline(matrices, linesBuffer, shape, (double) lookingAtPos.getX() - d, (double) lookingAtPos.getY() - e, (double) lookingAtPos.getZ() - f, 0.0F, 0.0F, 0.0F, 0.4F);
+                            drawShapeOutline(matrices, linesBuffer, shape, (double) lookingAtPos.getX() - camera.getPos().x, (double) lookingAtPos.getY() - camera.getPos().y, (double) lookingAtPos.getZ() - camera.getPos().z, 0.0F, 0.0F, 0.0F, 0.4F);
                             sob_renderedHighlight = true;
                         }
                     }
@@ -96,7 +99,7 @@ public abstract class WorldRendererMixin {
             }
         }
 
-        profiler.pop();
+        world.getProfiler().pop();
     }
 
     @Inject(
