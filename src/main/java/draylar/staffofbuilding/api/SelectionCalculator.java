@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SelectionCalculator {
 
@@ -54,7 +55,9 @@ public class SelectionCalculator {
         // add leftover stored neighbors
         selectedPositions.addAll(storedNeighbors);
 
-        return selectedPositions;
+        return selectedPositions.stream().filter(pos -> {
+            return originState.canPlaceAt(world, pos);
+        }).collect(Collectors.toList());
     }
 
     private static List<BlockPos> getValidNeighbors(World world, BlockPos startPos, Direction facingDirection, BlockState originState) {

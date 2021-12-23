@@ -81,7 +81,8 @@ public class BuilderStaffItem extends Item {
             // run placement logic if they have at least 1 of the item (or if they are a creative user)
             if (count > 0 || player.isCreative()) {
                 // potentially reset state to prevent dupe or similar  mechanics
-                if (StaffOfBuilding.RESET_LIST.contains(state.getBlock())) {
+                BlockState finalState = state;
+                if (StaffOfBuilding.RESET_LIST.contains(state.getBlock()) || StaffOfBuilding.CLASS_RESET_LIST.stream().anyMatch(resetClass -> resetClass.isAssignableFrom(finalState.getBlock().getClass()))) {
                     state = state.getBlock().getDefaultState();
                 }
 
