@@ -5,7 +5,8 @@
   "name": "Staff of Building",
   "description": "Builder wands, but they're actually staffs!",
   "authors": [
-    "Draylar"
+    "Draylar",
+    "krystejj"
   ],
   "license": "MIT",
   "icon": "assets/staffofbuilding/icon.png",
@@ -21,6 +22,6 @@
   "depends": {
     "fabricloader": ">=0.8.2+build.194",
     "fabric": "*",
-    "minecraft": "1.18.x"
+    "minecraft": "1.19.x"
   }
 }
