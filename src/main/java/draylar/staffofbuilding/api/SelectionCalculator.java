@@ -78,27 +78,34 @@ public class SelectionCalculator {
         return foundNeighbors;
     }
 
-    // todo: cache these?
     // grabs a list of facing neighbors
     private static List<Vec3i> getPotentialNeighbors(Direction direction) {
-        ArrayList<Vec3i> directions = new ArrayList<>();
+        return POTENTIAL_NEIGHBORS[direction.ordinal()];
+    }
 
-        if(direction.getAxis() == Direction.Axis.Y) {
-            directions.add(Direction.NORTH.getVector());
-            directions.add(Direction.EAST.getVector());
-            directions.add(Direction.SOUTH.getVector());
-            directions.add(Direction.WEST.getVector());
-            directions.add(Direction.WEST.getVector().offset(Direction.NORTH, 1));
-            directions.add(Direction.NORTH.getVector().offset(Direction.EAST, 1));
-            directions.add(Direction.EAST.getVector().offset(Direction.SOUTH, 1));
-            directions.add(Direction.SOUTH.getVector().offset(Direction.WEST, 1));
-        } else {
-            directions.add(direction.rotateYClockwise().getVector());
-            directions.add(direction.rotateYCounterclockwise().getVector());
-            directions.add(Direction.UP.getVector());
-            directions.add(Direction.DOWN.getVector());
-        }
+    private static final List<Vec3i>[] POTENTIAL_NEIGHBORS = new List[Direction.values().length];
 
-        return directions;
+    static {
+       for (var direction : Direction.values()) {
+           var directions = new ArrayList<Vec3i>();
+
+           if(direction.getAxis() == Direction.Axis.Y) {
+               directions.add(Direction.NORTH.getVector());
+               directions.add(Direction.EAST.getVector());
+               directions.add(Direction.SOUTH.getVector());
+               directions.add(Direction.WEST.getVector());
+               directions.add(Direction.WEST.getVector().offset(Direction.NORTH, 1));
+               directions.add(Direction.NORTH.getVector().offset(Direction.EAST, 1));
+               directions.add(Direction.EAST.getVector().offset(Direction.SOUTH, 1));
+               directions.add(Direction.SOUTH.getVector().offset(Direction.WEST, 1));
+           } else {
+               directions.add(direction.rotateYClockwise().getVector());
+               directions.add(direction.rotateYCounterclockwise().getVector());
+               directions.add(Direction.UP.getVector());
+               directions.add(Direction.DOWN.getVector());
+           }
+
+           POTENTIAL_NEIGHBORS[direction.ordinal()] = directions;
+       }
     }
 }
