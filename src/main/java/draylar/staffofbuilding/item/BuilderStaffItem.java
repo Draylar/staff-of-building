@@ -2,6 +2,7 @@ package draylar.staffofbuilding.item;
 
 import draylar.staffofbuilding.StaffOfBuilding;
 import draylar.staffofbuilding.api.SelectionCalculator;
+import eu.pb4.common.protection.api.CommonProtection;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -14,7 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -57,10 +57,9 @@ public class BuilderStaffItem extends Item {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
         super.appendTooltip(stack, world, tooltip, context);
-        tooltip.add(new TranslatableText("staffofbuilding.placement_range", size).formatted(Formatting.GRAY));
+        tooltip.add(Text.translatable("staffofbuilding.placement_range", size).formatted(Formatting.GRAY));
     }
 
     @Override
@@ -99,10 +98,12 @@ public class BuilderStaffItem extends Item {
                 if (!world.isClient) {
                     // place blocks
                     for (BlockPos position : positions) {
-                        BlockState originalState = world.getBlockState(position);
-                        if (originalState.isAir() || !originalState.getFluidState().isEmpty()) {
-                            world.setBlockState(position, state);
-                            taken++;
+                        if (CommonProtection.canPlaceBlock(world, position, player.getGameProfile(), player)) {
+                            BlockState originalState = world.getBlockState(position);
+                            if (originalState.isAir() || !originalState.getFluidState().isEmpty()) {
+                                world.setBlockState(position, state);
+                                taken++;
+                            }
                         }
                     }
 
