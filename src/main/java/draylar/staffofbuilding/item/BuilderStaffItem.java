@@ -2,6 +2,7 @@ package draylar.staffofbuilding.item;
 
 import draylar.staffofbuilding.StaffOfBuilding;
 import draylar.staffofbuilding.api.SelectionCalculator;
+import eu.pb4.common.protection.api.CommonProtection;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
@@ -97,10 +98,12 @@ public class BuilderStaffItem extends Item {
                 if (!world.isClient) {
                     // place blocks
                     for (BlockPos position : positions) {
-                        BlockState originalState = world.getBlockState(position);
-                        if (originalState.isAir() || !originalState.getFluidState().isEmpty()) {
-                            world.setBlockState(position, state);
-                            taken++;
+                        if (CommonProtection.canPlaceBlock(world, position, player.getGameProfile(), player)) {
+                            BlockState originalState = world.getBlockState(position);
+                            if (originalState.isAir() || !originalState.getFluidState().isEmpty()) {
+                                world.setBlockState(position, state);
+                                taken++;
+                            }
                         }
                     }
 
