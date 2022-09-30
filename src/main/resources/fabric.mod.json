@@ -7,6 +7,9 @@
   "authors": [
     "Draylar"
   ],
+  "contributors": [
+    "Krystian Wiecheć (krystejj)"
+  ],
   "license": "MIT",
   "icon": "assets/staffofbuilding/icon.png",
   "environment": "*",
@@ -21,6 +24,6 @@
   "depends": {
     "fabricloader": ">=0.8.2+build.194",
     "fabric": "*",
-    "minecraft": "1.18.x"
+    "minecraft": "1.19.x"
   }
 }
